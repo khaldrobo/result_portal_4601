@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Result + Meme Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      color: white;
+      margin: 0;
+      padding: 50px;
+    }
+    h1 {
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    input {
+      padding: 10px;
+      width: 200px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .result-box {
+      margin-top: 30px;
+      padding: 30px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      display: inline-block;
+      color: #333;
+      transition: transform 0.3s ease;
+    }
+    .result-box:hover {
+      transform: scale(1.02);
+    }
+    img {
+      margin-top: 20px;
+      max-width: 300px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎓 Tentative Grade of EEE 4601 🎓</h1>
+  <input id="studentId" placeholder="Enter your Student ID">
+  <button onclick="showResult()">Check Result</button>
+
+  <div id="result"></div>
+
+  <script>
+const database = [
+  { id: '170021170', name: 'Musenene Sharhabil', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '200021357', name: 'Mairama Musa', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021101', name: 'Faiza Fatema', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021102', name: 'Samia Haque', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021103', name: 'Sajid Rahman Bhuiyan ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021104', name: 'MD.Rafyul Islam', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021105', name: 'Moinul Islam Mahim ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021107', name: 'Ahmed Fatin Jawad', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021108', name: 'Abdullah Al Zayed', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021109', name: 'Md. Zubair Alom Rony', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021110', name: 'Saadman Sakib Abeer', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021111', name: 'Md. Jahid Hasan', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021113', name: 'Tahsin Jawad Bhuiyan', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 1 },
+  { id: '210021114', name: 'Nahian Shama Chaiti', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021115', name: 'Shamsul Haq Shuvo', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021116', name: 'Md. Muftasim Shahriar Shafi', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021117', name: 'Tamim Ahmmad Fahim ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021118', name: 'Mysha Rubaba', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021120', name: 'Mohammed Ishrak Abdullah ', grade: 'C', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021122', name: 'Mahir Faisal ', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021124', name: 'Md.Rakibul Hassan', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021127', name: 'Shafath Uddin Khoundaker', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021128', name: 'Fabiha Afaf Prapti ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021129', name: 'Fahim Nabi Torongo', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021130', name: 'Md. Roufur Rahim Hanjala', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021131', name: 'Saraf Nawar Oishee', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021132', name: 'Muntasir Amin', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021133', name: 'Anisha Mustafa Maisha', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021134', name: 'Jabir Ahmad Jahin Bhuiyan', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021136', name: 'M.H. Rehan', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021137', name: 'Aosaf Jarif Siddiquee', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021139', name: 'Mashrur Saad Emad', grade: 'A+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021140', name: 'Khandakar Siaum Masud', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021141', name: 'Faisal Abrar Chowdhury ', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021142', name: 'Md Sadman Shakib Sowrov ', grade: 'D', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021143', name: 'mohammed Bireer Ibrahim Elhag', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021144', name: 'Md.Redwanul Haque Abir ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021146', name: 'Waswa Fahad', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021148', name: 'Mumtahina Mustafize', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021149', name: 'Ahmed Awil Mohamoud', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021150', name: 'A. M. Tamim Haider', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021151', name: 'Md. Shazid Hasan', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021152', name: 'Muhin Rahman Rayat ', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021153', name: 'Abdoulatuf Mhadjou', grade: 'C', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021154', name: 'Ishak Amadou', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021155', name: 'Coulibaly Aicha', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021156', name: 'Mustapha Sambo', grade: 'C', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021157', name: 'Bello Aminu Ado', grade: 'C', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021158', name: 'ARAD TAOUSIF ', grade: 'A+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021159', name: 'Fahmida Fairooz Nadia', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021160', name: 'Tanvir Siddique', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021161', name: 'Abdullah As Sami ', grade: 'A-', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021162', name: 'MD.MAHIR SHAHRIAR MAHIN', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021163', name: 'Radiba Nuzhat ', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021164', name: 'Nusaiba Nowar', grade: 'D', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021165', name: 'Bah Alusine', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021166', name: 'Mohamed Elsiddig Mohamed Ishag', grade: 'C', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021201', name: 'Sadia Basher', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021202', name: 'Muhammed Shafayat Jamil', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021203', name: 'Bakhsh Mohammed Mahanna', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021204', name: 'MD. Mahir Faiyaz Anon', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 1 },
+  { id: '210021205', name: 'Masnun Rahman Tirtho', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021206', name: 'Mohd.Abdullah Abrar', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021207', name: 'Zaeed Ahmed', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021208', name: 'Maisha fahmida semonty', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021209', name: 'Maisha Rahman', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021210', name: 'Munshaat Atiq Nuzaba', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021211', name: 'Ibteda Karim', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021212', name: 'Ishrak Anan', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021213', name: 'Md.Daud Abrar ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021214', name: 'Taufeeq Hassan Omio', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021217', name: 'Ashfaq Ur Rahman Ifty ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021218', name: 'S. M. Rohan Ahmed', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021221', name: 'Naveed Saleh Nafi', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021222', name: 'Iffat Jahan', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021223', name: 'Saika Fazila', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021224', name: 'Md. Tousif Hasnat Mugdho', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021225', name: 'Labib Reza Ruhu', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021226', name: 'Fabiha Anbar Orpa', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021227', name: 'Araf bin musa', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021228', name: 'Zahir Sadik ZIKO ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021229', name: 'Yasar Al samin', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021230', name: 'Abrar Mubasshir Rahman', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021231', name: 'Taufikur Rahman', grade: 'C', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021233', name: 'Mahzabin Ishrat', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021234', name: 'Sabbir Hossain Tasrif', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021236', name: 'Faria Ahmed Suprova', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021237', name: 'Asif Sarker', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021238', name: 'Sumaiya Aziz', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021239', name: 'Somia Alam', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021240', name: 'Fattaur Rahim', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021241', name: 'Samiha Tasnim Mouly', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021242', name: 'Tashfia Islam', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021246', name: 'Enayatullah', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021247', name: 'Ahmed Musfiq Rafid', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021248', name: 'Mohamed Adil Ibrahim Ahmed', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021249', name: 'LiBAN ABDIRISAQ', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021250', name: 'Bayzid Mohammod Sakib', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021251', name: 'Asiful Haque Farabi', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021252', name: 'Seam Saif', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021253', name: 'Mir Mushfiq Rahman Ramim', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021254', name: 'Mbinkar Salifu Mbinbony', grade: 'C+', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021255', name: 'Farouk Abuzaid Baura', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021256', name: 'Nafis Islam  Fardin', grade: 'C', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021257', name: 'Mohammad Atahar Nur Faiz', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021258', name: 'Shajid Shahriar', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021259', name: 'Zaima Haque ', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021260', name: 'Lamin Touray ', grade: 'C+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021262', name: 'Ahmed atiq ', grade: 'C+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021264', name: 'Musa Shuaibu', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021265', name: 'Balbone Djenabou', grade: 'C', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021301', name: 'Nafisa Saiyara', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021302', name: 'Mayesha Tasnim', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021303', name: 'Chowdhury Nishat Tasnim', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021304', name: 'MD. Mansurul Haque', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021305', name: 'Md. Rezwan Islam Sabbir', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021306', name: 'Shahriar Islam', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021307', name: 'Md. Ashraful Islam', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021308', name: 'Adhnan Kalim', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021309', name: 'Mohd. Faiaaz Reza', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021311', name: 'Anayat Uddin Prodhan', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021312', name: 'Shafayat Ul Firoz', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021313', name: 'Tamimah Sanjarah', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021315', name: 'Shaharia Salim Forhad', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021316', name: 'SIAM AL SHAFIN', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021317', name: 'Sahil Islam', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021318', name: 'Tahsik Islam', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021319', name: 'Farhan sadiq', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021320', name: 'Tahmid Fardin Fahim', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021321', name: 'Marjukur rajjak', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021322', name: 'Ahmed Lutfe Inam', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021323', name: 'Md. Sadman Hasan Talukder', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 1 },
+  { id: '210021324', name: 'Md. Yasir Arafat', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021325', name: 'Mehrin Khan Medha', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021326', name: 'Md. Iftimum Ul Haque', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021329', name: 'Abir Shoaib', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021330', name: 'AR- RAFI ISHRAQ', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021334', name: 'Miah Rashnan Wahid Purna', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021335', name: 'Evan Ashfaque', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021337', name: 'Syed Istiuk Raja', grade: 'A', range1: 0, range2: 1, range3: 0, ecircuit: 1 },
+  { id: '210021341', name: 'MD RAFIQUL ISLAM', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 1 },
+  { id: '210021342', name: 'Ashfiq ul Rahman', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021344', name: 'Mumtahinah Meruna', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021345', name: 'Ahmed Ali Yasin', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021346', name: 'Tanjim Mahbub', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 1 },
+  { id: '210021347', name: 'Abdullah Ibne Nour', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021348', name: 'Zahra Farzeen', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021349', name: 'Sakib Al Azad', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021350', name: 'Fateha Akter', grade: 'B-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021351', name: 'Shabir Ahmad', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021352', name: 'FAKRI ISSIHAKA', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021353', name: 'Sultan Mahmud', grade: 'A', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021354', name: 'Sharia Hamza', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021355', name: 'Wahid Sadik', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 1 },
+  { id: '210021356', name: 'MOHAMMAD ABID HASAN', grade: 'C', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021357', name: 'MD Amirul Islam Barad', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021359', name: 'Ouattara Moussa', grade: 'C+', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021360', name: 'Abdulrahman lawal', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 },
+  { id: '210021361', name: 'Fahim Faisal', grade: 'B+', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021362', name: 'Inul Nishad Udoy', grade: 'A-', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021363', name: 'Md. Shithil Islam', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021364', name: 'Muhammad Zayed Anzam', grade: 'A+', range1: 0, range2: 0, range3: 1, ecircuit: 0 },
+  { id: '210021366', name: 'Saley hassane moumouni', grade: 'B', range1: 0, range2: 1, range3: 0, ecircuit: 0 },
+  { id: '210021368', name: 'OMER BABIKER OMER MOHAMMED', grade: 'F', range1: 1, range2: 0, range3: 0, ecircuit: 0 }
+];
+
+    // Meme folders (9 memes per category)
+    const memeCategories = {
+      'A+': Array.from({length:9}, (_,i)=>`memes/A+/meme${i+1}.jpg`),
+      'A': Array.from({length:9}, (_,i)=>`memes/A/meme${i+1}.jpg`),
+      'A-': Array.from({length:9}, (_,i)=>`memes/A-/meme${i+1}.jpg`),
+      'B+': Array.from({length:9}, (_,i)=>`memes/B+/meme${i+1}.jpg`),
+      'B': Array.from({length:9}, (_,i)=>`memes/B/meme${i+1}.jpg`),
+      'B-': Array.from({length:9}, (_,i)=>`memes/B-/meme${i+1}.jpg`),
+      'C+': Array.from({length:9}, (_,i)=>`memes/C+/meme${i+1}.jpg`),
+      'C': Array.from({length:9}, (_,i)=>`memes/C/meme${i+1}.jpg`),
+      'D': Array.from({length:9}, (_,i)=>`memes/D/meme${i+1}.jpg`),
+      'F': Array.from({length:9}, (_,i)=>`memes/F/meme${i+1}.jpg`)
+    };
+
+    function showResult() {
+      const id = document.getElementById('studentId').value.trim();
+      const student = database.find(s => s.id === id);
+      const resultDiv = document.getElementById('result');
+
+      if (student) {
+        const memes = memeCategories[student.grade] || memeCategories['F'];
+        const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+
+        let rangeMessage = '';
+        if (student.range1 === 1) {
+          rangeMessage = 'between 0–50';
+        } else if (student.range2 === 1) {
+          rangeMessage = 'between 51–100';
+        } else if (student.range3 === 1) {
+          rangeMessage = 'between 101–150';
+        }
+
+        let specialMessage = '';
+        if (student.ecircuit === 1) {
+          specialMessage = `
+            <p style="color: green; font-weight: 600;">You got the equivalent circuit right ⚡</p>
+            <img src="memes/special/equivalent_circuit.jpg" alt="Special Meme" style="max-width: 250px; border-radius: 10px; margin-top: 10px;">
+          `;
+        }
+
+        resultDiv.innerHTML = `
+          <div class='result-box'>
+            <h2>${student.name}</h2>
+            <p>Grade: <strong>${student.grade}</strong></p>
+            <p>Your marks in the final lie ${rangeMessage}.</p>
+            <img src="${randomMeme}" alt="Meme">
+            ${specialMessage}
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p style='color:#fff;'>No result found 😢</p>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
